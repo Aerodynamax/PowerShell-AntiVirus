@@ -31,29 +31,14 @@ function Startup {
     Start-Sleep -Seconds 4
     Write-Host "Checking For Updates ..."
     
-    if(!((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1").Content -eq $gui_file)){Update "gui"}
-    if(!((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list").Content -eq $threat_file)){Update "threats"}
-
-    Write-Host "No Updates Found, Continuing boot ..."
-    Start-Sleep -Seconds 1
-
-    Menu
-}
-function Update {
-    param([string]$file)
-    if($file -eq "gui"){
-        Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1" -OutFile "out.ps1"
-        Remove-Item ".\gui.ps1" -Force
-        Move-Item ".\out.ps1" ".\gui.ps1"
+    if(!((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1").Content -eq $gui_file -or ((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list").Content -eq $threat_file))){.\updater.ps1}
+    else{
+        Write-Host "No Updates Found, Continuing boot ..."
+        Start-Sleep -Seconds 1
+        Menu
     }
-    if($file -eq "threats"){
-        Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list" -OutFile "out.list"
-        Remove-Item ".\threats.list" -Force
-        Move-Item ".\out.list" ".\threats.list"
-    }
-    Write-Host "Update Successful, Please Restart application"
-    
 }
+
 
 function Menu {
     Logo
