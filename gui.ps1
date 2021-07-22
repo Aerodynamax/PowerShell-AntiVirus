@@ -7,8 +7,6 @@ foreach($line in [System.IO.File]::ReadLines('.\threats.list'))
 {
     $virus_filenames += $line
 }
-
-
 function Logo {
     Clear-Host
     Write-Host "__________                           _________.__           .__  .__    "
@@ -31,15 +29,13 @@ function Startup {
     Start-Sleep -Seconds 4
     Write-Host "Checking For Updates ..."
     
-    if(!((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1").Content -eq $gui_file -or ((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list").Content -eq $threat_file))){.\updater.ps1}
+    if(!((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1").Content -eq $gui_file -or ((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list").Content -eq $threat_file))){cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
     else{
         Write-Host "No Updates Found, Continuing boot ..."
         Start-Sleep -Seconds 1
         Menu
     }
 }
-
-
 function Menu {
     Logo
     Write-Host "1)>    QuickScan"
