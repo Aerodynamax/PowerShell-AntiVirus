@@ -1,3 +1,14 @@
+$virus_filenames = @()
+$quarentine_list = @()
+$gui_file = [System.IO.File]::ReadLines('.\gui.ps1')
+$threat_file = [System.IO.File]::ReadLines('.\gui.ps1')
+
+foreach($line in [System.IO.File]::ReadLines('.\threats.list'))
+{
+    $virus_filenames += $line
+}
+
+
 function Logo {
     Clear-Host
     Write-Host "__________                           _________.__           .__  .__    "
@@ -15,16 +26,35 @@ function Logo {
     Write-Host ""
     Write-Host ""
 }
-function StartupAndUpdate {
+function Startup {
     Logo
     Start-Sleep -Seconds 4
     Write-Host "Checking For Updates ..."
-    Start-Sleep -Seconds 4
+    
+    if(!((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1").Content -eq $gui_file)){Update "gui"}
+    if(!((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list").Content -eq $threat_file)){Update "threats"}
+
     Write-Host "No Updates Found, Continuing boot ..."
     Start-Sleep -Seconds 1
 
     Menu
 }
+function Update {
+    param([string]$file)
+    if($file -eq "gui"){
+        Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1" -OutFile "out.ps1"
+        Remove-Item ".\gui.ps1" -Force
+        Move-Item ".\out.ps1" ".\gui.ps1"
+    }
+    if($file -eq "threats"){
+        Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list" -OutFile "out.list"
+        Remove-Item ".\threats.list" -Force
+        Move-Item ".\out.list" ".\threats.list"
+    }
+    Write-Host "Update Successful, Please Restart application"
+    
+}
+
 function Menu {
     Logo
     Write-Host "1)>    QuickScan"
@@ -50,14 +80,6 @@ function Scan {
     param ( [string]$CurrPath, [string]$ScanType, [string]$ScanFolder )
 
     if($ScanType -eq 'quick'){$Path = "$env:HOMEPATH"}elseif($ScanType -eq 'full'){$Path = $env:HOMEDRIVE+'\'}elseif($ScanType -eq 'folder'){$Path = $ScanFolder}else {Write-Host 'invalid Scan type :-(';exit}
-
-    $virus_filenames = @()
-    $quarentine_list = @()
-
-    foreach($line in [System.IO.File]::ReadLines('.\threats.list'))
-    {
-        $virus_filenames += $line
-    }
 
     Write-Host 'Starting Scan Type:'$ScanType
 
