@@ -148,4 +148,4 @@ function FolderScan {
     }  
 }
 
-StartupAndUpdate
+Startup
