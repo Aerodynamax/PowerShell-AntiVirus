@@ -25,9 +25,15 @@ function Logo {
 function Startup {
     $host.ui.RawUI.WindowTitle = "PowerShell AntiVirus"
     Logo
-    Start-Sleep -Seconds 2
+    Start-Sleep -Seconds 1
+    Requirements
+    Start-Sleep -Seconds 1
     CheckForOtherAVs
     Start-Sleep -Seconds 2
+}
+function Requirements {
+    if(!(($PSVersionTable.PSVersion.Major -ge 5) -and ($PSVersionTable.PSVersion.Minor -ge 1))){Write-Host "Incompatible PowerShell Version :-("}
+    elseif(!([System.Boolean](Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction SilentlyContinue))){Write-Host "Incompatible Operating System :-("}
 }
 function CheckForOtherAVs {
     [Flags()] enum ProductState 
@@ -89,7 +95,7 @@ function Choose {
     if($choice -eq "1"){Scan $pwd quick; cmd.exe /c pause; Menu}
     elseif($choice -eq "2"){Scan $pwd full; cmd.exe /c pause; Menu}
     elseif($choice -eq "3"){FolderScan}
-    elseif($choice -eq "4"){cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
+    elseif($choice -eq "4"){Remove-Item ".\updater.ps1" -Force; Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/updater.ps1" -OutFile ".\updater.ps1"; cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
     elseif($choice -eq "5"){exit}
     else {
         Write-Host "Invalid Option :-("
