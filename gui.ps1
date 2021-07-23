@@ -28,15 +28,10 @@ function Startup {
     Start-Sleep -Seconds 2
     CheckForOtherAVs
     Start-Sleep -Seconds 2
-
-    Write-Host "Checking For Updates ..."
-    
-    if(!((compare-object (Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1") (Get-Content .\gui.ps1)) -or (compare-object (Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list") (Get-Content .\threats.list)))){cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
-    else{
-        Write-Host "No Updates Found, Continuing boot ..."
-        Start-Sleep -Seconds 1
-        Menu
-    }
+}
+function compare {
+    param([string]$1, [string]$2)
+    ForEach
 }
 function CheckForOtherAVs {
     [Flags()] enum ProductState 
@@ -70,7 +65,7 @@ function CheckForOtherAVs {
         Write-Host "  \/\_/  (____  /__|  |___|  /__|___|  /\___  / "
         Write-Host "              \/           \/        \//_____/  "
         Write-Host ""
-        Write-Host "You Currently Have An AntiVirus Running In The Background, `nIt May Falsely Flag This Project As An Virus, `n`n             USE AT YOUR OWN RISK!"
+        Write-Host "You May Currently Have An AntiVirus Running In The Background, `nIt May Falsely Flag This Project As An Virus, `n`n             USE AT YOUR OWN RISK!"
         Write-Host ""
         if((Read-Host "{c to contiue | e to exit}") -eq "c"){
             Write-Host "Continuing ..."
@@ -88,7 +83,8 @@ function Menu {
     Write-Host "1)>    QuickScan"
     Write-Host "2)>    FullScan"
     Write-Host "3)>    FolderScan"
-    Write-Host "4)>    Exit"
+    Write-Host "4)>    Update"
+    Write-Host "5)>    Exit"
     Write-Host ""
     Choose
 }
@@ -97,7 +93,8 @@ function Choose {
     if($choice -eq "1"){Scan $pwd quick; cmd.exe /c pause; Menu}
     elseif($choice -eq "2"){Scan $pwd full; cmd.exe /c pause; Menu}
     elseif($choice -eq "3"){FolderScan}
-    elseif($choice -eq "4"){exit}
+    elseif($choice -eq "4"){cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
+    elseif($choice -eq "5"){exit}
     else {
         Write-Host "Invalid Option :-("
         Start-Sleep -Seconds 1
