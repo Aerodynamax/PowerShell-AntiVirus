@@ -30,6 +30,7 @@ function Startup {
     Start-Sleep -Seconds 1
     CheckForOtherAVs
     Start-Sleep -Seconds 2
+    Menu
 }
 function Requirements {
     if(!(($PSVersionTable.PSVersion.Major -ge 5) -and ($PSVersionTable.PSVersion.Minor -ge 1))){Write-Host "Incompatible PowerShell Version :-("}
