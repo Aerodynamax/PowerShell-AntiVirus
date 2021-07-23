@@ -3,7 +3,7 @@ $quarentine_list = @()
 $gui_file = [System.IO.File]::ReadLines('.\gui.ps1')
 $threat_file = [System.IO.File]::ReadLines('.\threats.list')
 
-foreach($line in [System.IO.File]::ReadLines('.\threats.list'))
+foreach($line in $threat_file)
 {
     $virus_filenames += $line
 }
@@ -26,7 +26,10 @@ function Logo {
 }
 function Startup {
     Logo
-    Start-Sleep -Seconds 4
+    Start-Sleep -Seconds 2
+    CheckForOtherAVs
+    Start-Sleep -Seconds 2
+
     Write-Host "Checking For Updates ..."
     
     if( !((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1").Content -eq $gui_file) -or !((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list").Content -eq $threat_file) ){cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
@@ -34,6 +37,42 @@ function Startup {
         Write-Host "No Updates Found, Continuing boot ..."
         Start-Sleep -Seconds 1
         Menu
+    }
+}
+function CheckForOtherAVs {
+    [Flags()] enum ProductState 
+    {
+        Off         = 0x0000
+        On          = 0x1000
+        Snoozed     = 0x2000
+        Expired     = 0x3000
+    }
+    [Flags()] enum ProductFlags
+    {
+        SignatureStatus = 0x00F0
+        ProductOwner    = 0x0F00
+        ProductState    = 0xF000
+    }
+    
+    # get bits
+    $av = $false
+    $infos = Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntiVirusProduct -ComputerName $computer
+    ForEach ($info in $infos){
+        [UInt32]$state = $info.productState
+        foreach ($item in ([ProductState]($state -band [ProductFlags]::ProductState))){
+            if($item -eq "On"){$av=$true}
+        }
+    }
+    if($av){
+        Write-Host "
+                                .__                
+    __  _  _______ _______  ____ |__| ____    ____  
+    \ \/ \/ /\__  \\_  __ \/    \|  |/    \  / ___\ 
+    \     /  / __ \|  | \/   |  \  |   |  \/ /_/  >
+    \/\_/  (____  /__|  |___|  /__|___|  /\___  / 
+                \/           \/        \//_____/  
+    "
+        Write-Host "You Currently Have An AntiVirus Running In The Background, `nIt May Falsely Flag This Project As An Virus, `n`n             USE AT YOUR OWN RISK!"
     }
 }
 function Menu {
