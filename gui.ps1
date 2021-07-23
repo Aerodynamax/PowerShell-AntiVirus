@@ -29,10 +29,6 @@ function Startup {
     CheckForOtherAVs
     Start-Sleep -Seconds 2
 }
-function compare {
-    param([string]$1, [string]$2)
-    ForEach
-}
 function CheckForOtherAVs {
     [Flags()] enum ProductState 
     {
