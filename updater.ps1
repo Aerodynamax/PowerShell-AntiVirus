@@ -7,7 +7,7 @@ Write-Host "                |____/|   __/\____ |(____  /__|  \___  >__|   "
 Write-Host "                      |__|        \/     \/          \/       "
 Write-Host ""
 Write-Host ""
-Write-Host "Update Found, Updating ..."
+Write-Host "Attempting Update ..."
 Start-Sleep 2
 
 Remove-Item ".\gui.ps1" -Force
@@ -15,6 +15,6 @@ Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-Anti
 Remove-Item ".\threats.list" -Force
 Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list" -OutFile ".\threats.list"
 
-Write-Host "Update Successful, Restarting Application ..."
+Write-Host "Update Successful, Restarting PowerShell AntiVirus ..."
 Start-Sleep -Seconds 2
 cmd.exe /c "powershell -Exec Bypass .\gui.ps1"; exit
