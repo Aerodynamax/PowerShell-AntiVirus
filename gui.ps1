@@ -1,7 +1,5 @@
 $virus_filenames = @()
 $quarentine_list = @()
-$gui_file = [System.IO.File]::ReadLines('.\gui.ps1')
-$threat_file = [System.IO.File]::ReadLines('.\threats.list')
 
 foreach($line in [System.IO.File]::ReadLines('.\threats.list'))
 {
@@ -29,9 +27,10 @@ function Startup {
     Start-Sleep -Seconds 2
     CheckForOtherAVs
     Start-Sleep -Seconds 2
+
     Write-Host "Checking For Updates ..."
     
-    if( !((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1").Content -eq $gui_file) -or !((Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list").Content -eq $threat_file) ){cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
+    if(!((compare-object (Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/gui.ps1") (Get-Content .\gui.ps1)) -or (compare-object (Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-AntiVirus/main/threats.list") (Get-Content .\threats.list)))){cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit}
     else{
         Write-Host "No Updates Found, Continuing boot ..."
         Start-Sleep -Seconds 1
@@ -63,17 +62,24 @@ function CheckForOtherAVs {
         }
     }
     if($av){
-        Write-Host "
-                                .__                
-    __  _  _______ _______  ____ |__| ____    ____  
-    \ \/ \/ /\__  \\_  __ \/    \|  |/    \  / ___\ 
-    \     /  / __ \|  | \/   |  \  |   |  \/ /_/  >
-    \/\_/  (____  /__|  |___|  /__|___|  /\___  / 
-                \/           \/        \//_____/  
-    "
+        Write-Host "                             .__                "
+        Write-Host "__  _  _______ _______  ____ |__| ____    ____  "
+        Write-Host "\ \/ \/ /\__  \\_  __ \/    \|  |/    \  / ___\ "
+        Write-Host " \     /  / __ \|  | \/   |  \  |   |  \/ /_/  >"
+        Write-Host "  \/\_/  (____  /__|  |___|  /__|___|  /\___  / "
+        Write-Host "              \/           \/        \//_____/  "
+        Write-Host ""
         Write-Host "You Currently Have An AntiVirus Running In The Background, `nIt May Falsely Flag This Project As An Virus, `n`n             USE AT YOUR OWN RISK!"
-        $AVquestion = Read-Host "Do you wish to continue? (c to continue | e to exit)"
-        if($AVquestion -eq "c"){ Write-Host "Continueing Startup ..."; Start-Sleep -Seconds 1 }elseif($AVquestion -eq "e"){ Write-Host "Exiting ..."; Start-Sleep -Seconds 1; exit }else { Write-Host "Invalid Option, Exiting ..."; Start-Sleep -Seconds 1; exit }
+        Write-Host ""
+        if((Read-Host "{c to contiue | e to exit}") -eq "c"){
+            Write-Host "Continuing ..."
+            Start-Sleep -Seconds 1
+        }
+        else {
+            Write-Host "Exiting ..."
+            Start-Sleep -Seconds 1
+            exit
+        }
     }
 }
 function Menu {

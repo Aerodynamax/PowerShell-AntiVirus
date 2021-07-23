@@ -17,4 +17,4 @@ Invoke-WebRequest "https://raw.githubusercontent.com/Aerodynamax/PowerShell-Anti
 
 Write-Host "Update Successful, Restarting Application ..."
 Start-Sleep -Seconds 2
-cmd.exe /c "powershell -Exec Bypass .\updater.ps1"; exit
+cmd.exe /c "powershell -Exec Bypass .\gui.ps1"; exit
