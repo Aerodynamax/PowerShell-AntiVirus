@@ -33,7 +33,7 @@ function Startup {
     Menu
 }
 function Requirements {
-    if(!(($PSVersionTable.PSVersion.Major -ge 5) -and ($PSVersionTable.PSVersion.Minor -ge 1))){Write-Host "Incompatible PowerShell Version :-("}
+    if(powershell -version 5.1 -eq "Cannot start Windows PowerShell version 5.1 because it is not installed."){Write-Host "Incompatible PowerShell Version :-("}
     elseif(!([System.Boolean](Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction SilentlyContinue))){Write-Host "Incompatible Operating System :-("}
 }
 function CheckForOtherAVs {
