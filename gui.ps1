@@ -23,6 +23,7 @@ function Logo {
     Write-Host ""
 }
 function Startup {
+    $host.ui.RawUI.WindowTitle = "PowerShell AntiVirus"
     Logo
     Start-Sleep -Seconds 2
     CheckForOtherAVs
